@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAuth } from '../../../hooks/useAuth';
@@ -21,6 +21,7 @@ export default function DashboardPage() {
   );
   const limit = 10;
   const [debouncedSearch, setDebouncedSearch] = useState(search.trim());
+  const lastSyncedQueryRef = useRef<string>('');
 
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -31,24 +32,25 @@ export default function DashboardPage() {
   }, [search]);
 
   useEffect(() => {
-    const urlSearch = searchParams.get('search') ?? '';
-    const urlStatus = (searchParams.get('status') as '' | 'completed' | 'pending' | null) ?? '';
-    if (urlSearch !== search) setSearch(urlSearch);
-    if (urlStatus !== status) setStatus(urlStatus);
-  }, [search, searchParams, status]);
-
-  useEffect(() => {
     const next = new URLSearchParams();
     if (debouncedSearch) next.set('search', debouncedSearch);
     if (status) next.set('status', status);
-    next.set('limit', String(limit));
-    const query = next.toString();
-    const target = query ? `${pathname}?${query}` : pathname;
-    const current = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-    if (target !== current) {
-      router.replace(target);
+    const nextQuery = next.toString();
+
+    if (typeof window === 'undefined' || nextQuery === lastSyncedQueryRef.current) {
+      return;
     }
-  }, [debouncedSearch, limit, pathname, router, searchParams, status]);
+
+    const currentQuery = window.location.search.startsWith('?')
+      ? window.location.search.slice(1)
+      : window.location.search;
+
+    if (nextQuery !== currentQuery) {
+      router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname);
+    }
+
+    lastSyncedQueryRef.current = nextQuery;
+  }, [debouncedSearch, pathname, router, status]);
 
   const { query, createMutation, updateMutation, toggleMutation, deleteMutation } = useTasks({
     search: debouncedSearch || undefined,

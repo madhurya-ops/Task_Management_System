@@ -20,7 +20,7 @@ const envSchema = z.object({
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
   COOKIE_SECURE: z.coerce.boolean().default(false),
-  ALLOWED_ORIGIN: z.string().url().default('http://localhost:3000')
+  ALLOWED_ORIGIN: z.string().default('http://localhost:3000')
 });
 
 const parsed = envSchema.safeParse(rawEnv);

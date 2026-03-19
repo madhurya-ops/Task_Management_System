@@ -39,9 +39,18 @@ const authRateLimitMiddleware: RequestHandler = (req, res, next) => {
 };
 
 app.use(helmet());
+const allowedOrigins = env.ALLOWED_ORIGIN.split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 app.use(
   cors({
-    origin: env.ALLOWED_ORIGIN,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true
   })
 );
