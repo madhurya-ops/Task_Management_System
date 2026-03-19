@@ -1,0 +1,20 @@
+'use client';
+
+import { create } from 'zustand';
+import type { User } from '../../types';
+
+interface AuthState {
+  user: User | null;
+  isLoading: boolean;
+  setUser: (user: User | null) => void;
+  setLoading: (value: boolean) => void;
+  clear: () => void;
+}
+
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  isLoading: true,
+  setUser: (user) => set({ user }),
+  setLoading: (isLoading) => set({ isLoading }),
+  clear: () => set({ user: null, isLoading: false })
+}));

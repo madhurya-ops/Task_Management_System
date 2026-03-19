@@ -1,0 +1,26 @@
+{
+  "name": "task-management-system",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=20 <21",
+    "npm": ">=10 <11"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @tms/api & npm run dev -w @tms/web",
+    "dev:light": "npm run dev:light -w @tms/api & NEXT_TELEMETRY_DISABLED=1 npm run dev -w @tms/web",
+    "build": "npm run build -w @tms/api && npm run build -w @tms/web",
+    "start": "npm run start -w @tms/api & npm run start -w @tms/web",
+    "lint": "npm run lint -w @tms/api && npm run lint -w @tms/web",
+    "test": "npm run test -w @tms/api && npm run test -w @tms/web"
+  },
+  "overrides": {
+    "qs": "^6.11.2",
+    "side-channel": "^1.0.4",
+    "get-intrinsic": "^1.2.4"
+  }
+}
