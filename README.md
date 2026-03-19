@@ -117,10 +117,10 @@ System:
 
 ## Screenshots
 ### Login
-![Login Page](docs/login.png)
+![Login Page](docs/login.jpeg)
 
 ### Register
-![Register Page](docs/register.png)
+![Register Page](docs/register.jpeg)
 
 ### Dashboard
 ![Dashboard](docs/dashboard.png)
